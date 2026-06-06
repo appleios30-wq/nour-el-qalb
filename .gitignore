@@ -1,0 +1,39 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+.metadata/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub/
+build/
+*.lock
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Android
+local.properties
+*.keystore
+*.jks
+*.key
+
+# iOS
+Pods/
+Podfile.lock
