@@ -6,9 +6,11 @@ import '../models/note.dart';
 class StorageService {
   static const String _settingsBox = 'settings';
   static const String _adhkarBox = 'adhkar';
+  static const String _customBox = 'custom';
   static const String _notesBox = 'notes';
   static const String _onboardingKey = 'onboarding_completed';
   static const String _pinKey = 'notes_pin';
+  static const String _fontSettingsKey = 'font_settings';
 
   // ===== الإعدادات =====
   static Future<void> saveSettings(UserSettings settings) async {
@@ -58,6 +60,46 @@ class StorageService {
     return {};
   }
 
+  // ===== الأذكار المخصصة =====
+  static Future<void> saveCustomDhikr(Dhikr dhikr) async {
+    final box = Hive.box(_customBox);
+    final existing = box.get('custom_dhikrs', defaultValue: <dynamic>[]);
+    final list = List<Map<String, dynamic>>.from(existing);
+    list.add(dhikr.toJson());
+    await box.put('custom_dhikrs', list);
+  }
+
+  static Future<List<Dhikr>> getCustomDhikrs() async {
+    final box = Hive.box(_customBox);
+    final data = box.get('custom_dhikrs', defaultValue: <dynamic>[]);
+    return (data as List)
+        .map((item) => Dhikr.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
+  }
+
+  static Future<void> deleteCustomDhikr(String id) async {
+    final box = Hive.box(_customBox);
+    final existing = box.get('custom_dhikrs', defaultValue: <dynamic>[]);
+    final list = List<Map<String, dynamic>>.from(existing);
+    list.removeWhere((item) => item['id'] == id);
+    await box.put('custom_dhikrs', list);
+  }
+
+  // ===== إعدادات الخطوط =====
+  static Future<void> saveFontSettings(Map<String, String> settings) async {
+    final box = Hive.box(_settingsBox);
+    await box.put(_fontSettingsKey, settings);
+  }
+
+  static Future<Map<String, String>> getFontSettings() async {
+    final box = Hive.box(_settingsBox);
+    final data = box.get(_fontSettingsKey);
+    if (data != null) {
+      return Map<String, String>.from(data);
+    }
+    return {'general': 'Cairo', 'dhikr': 'Amiri'};
+  }
+
   // ===== الملاحظات =====
   static Future<void> saveNotes(List<Note> notes) async {
     final box = Hive.box(_notesBox);
@@ -91,6 +133,7 @@ class StorageService {
   static Future<void> clearAll() async {
     await Hive.box(_settingsBox).clear();
     await Hive.box(_adhkarBox).clear();
+    await Hive.box(_customBox).clear();
     await Hive.box(_notesBox).clear();
   }
 }

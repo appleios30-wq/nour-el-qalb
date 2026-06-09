@@ -22,12 +22,21 @@ class _TasbihScreenState extends State<TasbihScreen> {
   bool _showCelebration = false;
   bool _isRayActive = false;
   int _totalCompletions = 0;
+  List<Dhikr> _allDhikrs = [];
 
   @override
   void initState() {
     super.initState();
     _currentDhikr = widget.selectedDhikr ?? AdhkarData.defaultAdhkar.first;
     _loadProgress();
+    _loadAllDhikrs();
+  }
+
+  Future<void> _loadAllDhikrs() async {
+    final custom = await StorageService.getCustomDhikrs();
+    setState(() {
+      _allDhikrs = [...AdhkarData.defaultAdhkar, ...custom];
+    });
   }
 
   Future<void> _loadProgress() async {
@@ -40,11 +49,12 @@ class _TasbihScreenState extends State<TasbihScreen> {
   }
 
   Future<void> _saveProgress() async {
-    final adhkar = List<Dhikr>.from(AdhkarData.defaultAdhkar);
-    final index = adhkar.indexWhere((d) => d.id == _currentDhikr.id);
+    final customAdhkar = await StorageService.getCustomDhikrs();
+    final allAdhkar = [...AdhkarData.defaultAdhkar, ...customAdhkar];
+    final index = allAdhkar.indexWhere((d) => d.id == _currentDhikr.id);
     if (index != -1) {
-      adhkar[index].currentCount = _currentDhikr.currentCount;
-      await StorageService.saveAdhkarProgress(adhkar);
+      allAdhkar[index].currentCount = _currentDhikr.currentCount;
+      await StorageService.saveAdhkarProgress(allAdhkar);
     }
   }
 
@@ -155,6 +165,8 @@ class _TasbihScreenState extends State<TasbihScreen> {
             style: NeonColors.getNeonTextStyle(
               _currentDhikr.neonColor,
               fontSize: 24,
+            ).copyWith(
+              fontFamily: _currentDhikr.fontFamily,
             ),
           ),
           IconButton(
@@ -175,10 +187,10 @@ class _TasbihScreenState extends State<TasbihScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             decoration: BoxDecoration(
-              color: NeonColors.darkCard.withOpacity(0.8),
+              color: NeonColors.darkCard.withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(30),
               border: Border.all(
-                color: _currentDhikr.neonColor.withOpacity(0.5),
+                color: _currentDhikr.neonColor.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),
@@ -187,6 +199,8 @@ class _TasbihScreenState extends State<TasbihScreen> {
               style: NeonColors.getNeonTextStyle(
                 _currentDhikr.neonColor,
                 fontSize: 28,
+              ).copyWith(
+                fontFamily: _currentDhikr.fontFamily,
               ),
             ),
           ),
@@ -211,9 +225,10 @@ class _TasbihScreenState extends State<TasbihScreen> {
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
                       color: _currentDhikr.neonColor,
+                      fontFamily: _currentDhikr.fontFamily,
                       shadows: [
                         Shadow(
-                          color: _currentDhikr.neonColor.withOpacity(0.8),
+                          color: _currentDhikr.neonColor.withValues(alpha: 0.8),
                           blurRadius: 15,
                         ),
                       ],
@@ -222,7 +237,7 @@ class _TasbihScreenState extends State<TasbihScreen> {
                   Text(
                     'من ${_currentDhikr.targetCount}',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.6),
+                      color: Colors.white.withValues(alpha: 0.6),
                       fontSize: 16,
                     ),
                   ),
@@ -236,7 +251,7 @@ class _TasbihScreenState extends State<TasbihScreen> {
           Text(
             'اضغط على الدائرة للتسبيح',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withValues(alpha: 0.5),
               fontSize: 14,
             ),
           ),
@@ -261,9 +276,9 @@ class _TasbihScreenState extends State<TasbihScreen> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: AdhkarData.defaultAdhkar.length,
+        itemCount: _allDhikrs.length,
         itemBuilder: (context, index) {
-          final dhikr = AdhkarData.defaultAdhkar[index];
+          final dhikr = _allDhikrs[index];
           final isSelected = dhikr.id == _currentDhikr.id;
           
           return GestureDetector(
@@ -274,8 +289,8 @@ class _TasbihScreenState extends State<TasbihScreen> {
               width: 80,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? dhikr.neonColor.withOpacity(0.2)
-                    : NeonColors.darkCard.withOpacity(0.8),
+                    ? dhikr.neonColor.withValues(alpha: 0.2)
+                    : NeonColors.darkCard.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
                   color: isSelected ? dhikr.neonColor : Colors.transparent,
@@ -307,7 +322,7 @@ class _TasbihScreenState extends State<TasbihScreen> {
                   Text(
                     '${dhikr.currentCount}/${dhikr.targetCount}',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha: 0.4),
                       fontSize: 8,
                     ),
                   ),

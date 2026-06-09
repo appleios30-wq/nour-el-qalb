@@ -10,6 +10,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('settings');
   await Hive.openBox('adhkar');
+  await Hive.openBox('custom');
   await Hive.openBox('notes');
   
   // قفل الاتجاه عمودي
