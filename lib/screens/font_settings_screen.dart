@@ -101,10 +101,10 @@ class _FontSettingsScreenState extends State<FontSettingsScreen> {
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: NeonColors.darkCard.withValues(alpha: 0.8),
+                          color: NeonColors.darkCard.withOpacity( 0.8),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: NeonColors.gold.withValues(alpha: 0.3),
+                            color: NeonColors.gold.withOpacity( 0.3),
                           ),
                         ),
                         child: Column(
@@ -195,7 +195,7 @@ class _FontSettingsScreenState extends State<FontSettingsScreen> {
         Text(
           subtitle,
           style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.6),
+            color: Colors.white.withOpacity( 0.6),
             fontSize: 14,
           ),
         ),
@@ -209,13 +209,13 @@ class _FontSettingsScreenState extends State<FontSettingsScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? NeonColors.gold.withValues(alpha: 0.15)
-                    : NeonColors.darkCard.withValues(alpha: 0.5),
+                    ? NeonColors.gold.withOpacity( 0.15)
+                    : NeonColors.darkCard.withOpacity( 0.5),
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
                   color: isSelected
                       ? NeonColors.gold
-                      : Colors.white.withValues(alpha: 0.1),
+                      : Colors.white.withOpacity( 0.1),
                   width: isSelected ? 2 : 1,
                 ),
                 boxShadow: isSelected
@@ -250,7 +250,7 @@ class _FontSettingsScreenState extends State<FontSettingsScreen> {
                         Text(
                           font.description,
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.5),
+                            color: Colors.white.withOpacity( 0.5),
                             fontSize: 12,
                           ),
                         ),

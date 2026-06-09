@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 TimeService.getTimeGreeting(),
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.7),
+                  color: Colors.white.withOpacity( 0.7),
                   fontSize: 16,
                 ),
               ),
@@ -167,10 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: NeonColors.darkCard.withValues(alpha: 0.8),
+                    color: NeonColors.darkCard.withOpacity( 0.8),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: NeonColors.green.withValues(alpha: 0.3),
+                      color: NeonColors.green.withOpacity( 0.3),
                     ),
                   ),
                   child: Icon(Icons.add, color: NeonColors.green, size: 20),
@@ -188,10 +188,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: NeonColors.darkCard.withValues(alpha: 0.8),
+                    color: NeonColors.darkCard.withOpacity( 0.8),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: NeonColors.gold.withValues(alpha: 0.3),
+                      color: NeonColors.gold.withOpacity( 0.3),
                     ),
                   ),
                   child: Icon(Icons.text_fields, color: NeonColors.gold, size: 20),
@@ -214,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: NeonColors.darkCard.withValues(alpha: 0.8),
+              color: NeonColors.darkCard.withOpacity( 0.8),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Row(
@@ -229,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? _getCategoryColor(index).withValues(alpha: 0.2)
+                            ? _getCategoryColor(index).withOpacity( 0.2)
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -281,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
       borderRadius: BorderRadius.circular(10),
       child: LinearProgressIndicator(
         value: progress,
-        backgroundColor: NeonColors.darkCard.withValues(alpha: 0.5),
+        backgroundColor: NeonColors.darkCard.withOpacity( 0.5),
         valueColor: AlwaysStoppedAnimation<Color>(
           _getCategoryColor(_selectedCategoryIndex),
         ),
@@ -339,7 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.red.withValues(alpha: 0.8),
+                        color: Colors.red.withOpacity( 0.8),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(Icons.close, color: Colors.white, size: 14),
@@ -379,10 +379,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: NeonColors.darkCard.withValues(alpha: 0.9),
+        color: NeonColors.darkCard.withOpacity( 0.9),
         border: Border(
           top: BorderSide(
-            color: NeonColors.gold.withValues(alpha: 0.3),
+            color: NeonColors.gold.withOpacity( 0.3),
             width: 1,
           ),
         ),
@@ -412,7 +412,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? NeonColors.gold.withValues(alpha: 0.2)
+              ? NeonColors.gold.withOpacity( 0.2)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(

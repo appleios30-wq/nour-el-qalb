@@ -113,7 +113,7 @@ class _AddDhikrScreenState extends State<AddDhikrScreen> {
                           max: 1000,
                           divisions: 999,
                           activeColor: NeonColors.purple,
-                          inactiveColor: NeonColors.purple.withValues(alpha: 0.2),
+                          inactiveColor: NeonColors.purple.withOpacity( 0.2),
                           label: '$_targetCount',
                           onChanged: (v) => setState(() => _targetCount = v.round()),
                         ),
@@ -123,7 +123,7 @@ class _AddDhikrScreenState extends State<AddDhikrScreen> {
                         decoration: BoxDecoration(
                           color: NeonColors.darkCard,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: NeonColors.purple.withValues(alpha: 0.3)),
+                          border: Border.all(color: NeonColors.purple.withOpacity( 0.3)),
                         ),
                         child: Text(
                           '$_targetCount',
@@ -222,9 +222,9 @@ class _AddDhikrScreenState extends State<AddDhikrScreen> {
       validator: validator,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.4)),
+        hintStyle: TextStyle(color: Colors.white.withOpacity( 0.4)),
         filled: true,
-        fillColor: NeonColors.darkCard.withValues(alpha: 0.5),
+        fillColor: NeonColors.darkCard.withOpacity( 0.5),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
@@ -232,7 +232,7 @@ class _AddDhikrScreenState extends State<AddDhikrScreen> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: NeonColors.gold.withValues(alpha: 0.5),
+            color: NeonColors.gold.withOpacity( 0.5),
           ),
         ),
       ),
@@ -243,7 +243,7 @@ class _AddDhikrScreenState extends State<AddDhikrScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: NeonColors.darkCard.withValues(alpha: 0.5),
+        color: NeonColors.darkCard.withOpacity( 0.5),
         borderRadius: BorderRadius.circular(15),
       ),
       child: DropdownButtonHideUnderline(
@@ -268,7 +268,7 @@ class _AddDhikrScreenState extends State<AddDhikrScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: NeonColors.darkCard.withValues(alpha: 0.5),
+        color: NeonColors.darkCard.withOpacity( 0.5),
         borderRadius: BorderRadius.circular(15),
       ),
       child: DropdownButtonHideUnderline(

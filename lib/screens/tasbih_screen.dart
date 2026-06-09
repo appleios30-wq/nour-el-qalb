@@ -187,10 +187,10 @@ class _TasbihScreenState extends State<TasbihScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             decoration: BoxDecoration(
-              color: NeonColors.darkCard.withValues(alpha: 0.8),
+              color: NeonColors.darkCard.withOpacity( 0.8),
               borderRadius: BorderRadius.circular(30),
               border: Border.all(
-                color: _currentDhikr.neonColor.withValues(alpha: 0.5),
+                color: _currentDhikr.neonColor.withOpacity( 0.5),
                 width: 2,
               ),
             ),
@@ -228,7 +228,7 @@ class _TasbihScreenState extends State<TasbihScreen> {
                       fontFamily: _currentDhikr.fontFamily,
                       shadows: [
                         Shadow(
-                          color: _currentDhikr.neonColor.withValues(alpha: 0.8),
+                          color: _currentDhikr.neonColor.withOpacity( 0.8),
                           blurRadius: 15,
                         ),
                       ],
@@ -237,7 +237,7 @@ class _TasbihScreenState extends State<TasbihScreen> {
                   Text(
                     'من ${_currentDhikr.targetCount}',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.6),
+                      color: Colors.white.withOpacity( 0.6),
                       fontSize: 16,
                     ),
                   ),
@@ -251,7 +251,7 @@ class _TasbihScreenState extends State<TasbihScreen> {
           Text(
             'اضغط على الدائرة للتسبيح',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.5),
+              color: Colors.white.withOpacity( 0.5),
               fontSize: 14,
             ),
           ),
@@ -289,8 +289,8 @@ class _TasbihScreenState extends State<TasbihScreen> {
               width: 80,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? dhikr.neonColor.withValues(alpha: 0.2)
-                    : NeonColors.darkCard.withValues(alpha: 0.8),
+                    ? dhikr.neonColor.withOpacity( 0.2)
+                    : NeonColors.darkCard.withOpacity( 0.8),
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
                   color: isSelected ? dhikr.neonColor : Colors.transparent,
@@ -322,7 +322,7 @@ class _TasbihScreenState extends State<TasbihScreen> {
                   Text(
                     '${dhikr.currentCount}/${dhikr.targetCount}',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.4),
+                      color: Colors.white.withOpacity( 0.4),
                       fontSize: 8,
                     ),
                   ),

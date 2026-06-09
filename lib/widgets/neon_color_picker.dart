@@ -79,7 +79,7 @@ class NeonColorPicker extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         shadows: [
                           Shadow(
-                            color: selectedColor.withValues(alpha: 0.8),
+                            color: selectedColor.withOpacity( 0.8),
                             blurRadius: 10,
                           ),
                         ],
@@ -111,7 +111,7 @@ class NeonColorPicker extends StatelessWidget {
                         boxShadow: isSelected
                             ? NeonColors.getNeonGlow(color, intensity: 1.0)
                             : [BoxShadow(
-                                color: color.withValues(alpha: 0.3),
+                                color: color.withOpacity( 0.3),
                                 blurRadius: 5,
                               )],
                       ),
