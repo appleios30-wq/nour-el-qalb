@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/dhikr.dart';
 
+
 class SleepAdhkarData {
   static List<Dhikr> get adhkar => [
     Dhikr(
@@ -10,7 +11,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFF7B68EE),
       targetCount: 1,
       virtue: 'من قالها ثم مات مات على الفطرة',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
     Dhikr(
       id: 'sleep_2',
@@ -19,7 +20,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFF6A5ACD),
       targetCount: 1,
       virtue: 'وقاية من عذاب القبر',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
     Dhikr(
       id: 'sleep_3',
@@ -28,7 +29,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFF483D8B),
       targetCount: 1,
       virtue: 'آمن على نفسه من الشيطان',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
     Dhikr(
       id: 'sleep_4',
@@ -37,7 +38,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFF4B0082),
       targetCount: 1,
       virtue: 'حفظ من كل شر',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
     Dhikr(
       id: 'sleep_5',
@@ -46,7 +47,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFF00BFFF),
       targetCount: 100,
       virtue: 'خير ما يقال عند النوم',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
     Dhikr(
       id: 'sleep_6',
@@ -55,7 +56,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFFFFD700),
       targetCount: 1,
       virtue: 'من قرأها لم يزل عليه من الله حافظ',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
     Dhikr(
       id: 'sleep_7',
@@ -64,7 +65,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFF00FF7F),
       targetCount: 1,
       virtue: 'كفت من كل شيء',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
     Dhikr(
       id: 'sleep_8',
@@ -73,7 +74,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFF00CED1),
       targetCount: 1,
       virtue: 'ذكر عند النوم موجب للجنة',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
     Dhikr(
       id: 'sleep_9',
@@ -82,7 +83,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFFFF8C00),
       targetCount: 1,
       virtue: 'شكر الله على نعمه',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
     Dhikr(
       id: 'sleep_10',
@@ -91,7 +92,7 @@ class SleepAdhkarData {
       neonColor: const Color(0xFFFF69B4),
       targetCount: 1,
       virtue: 'حفظ من شر الجن',
-      category: DhikrCategory.sleep,
+      categoryIds: ['sleep'],
     ),
   ];
 }

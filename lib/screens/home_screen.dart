@@ -27,6 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Dhikr> _customAdhkar = [];
   Map<String, int> _progress = {};
   double _fontSizeMultiplier = 1.0;
+  List<String> _categoryTabs = [];
+  String _selectedTabId = 'morning';
 
   @override
   void initState() {
@@ -39,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final customAdhkar = await StorageService.getCustomDhikrs();
     final fontSettings = await StorageService.getFontSettings();
     final sizeStr = fontSettings['size'] ?? '1.0';
+    final tabs = await StorageService.getCategoryTabs();
 
     final adhkar = AdhkarData.defaultAdhkar;
     for (var dhikr in adhkar) {
@@ -61,26 +64,43 @@ class _HomeScreenState extends State<HomeScreen> {
       _customAdhkar = customAdhkar;
       _progress = progress;
       _fontSizeMultiplier = double.tryParse(sizeStr) ?? 1.0;
+      _categoryTabs = tabs;
+      if (!_categoryTabs.contains(_selectedTabId)) {
+        _selectedTabId = _categoryTabs.isNotEmpty ? _categoryTabs.first : 'morning';
+      }
     });
   }
 
-  List<Dhikr> get _allAdhkar {
-    List<Dhikr> result = [];
-    result.addAll(_adhkar);
-    result.addAll(_customAdhkar.where((d) => d.category == DhikrCategory.general));
-    result.addAll(MorningAdhkarData.adhkar);
-    result.addAll(_customAdhkar.where((d) => d.category == DhikrCategory.morning));
-    result.addAll(EveningAdhkarData.adhkar);
-    result.addAll(_customAdhkar.where((d) => d.category == DhikrCategory.evening));
-    result.addAll(SleepAdhkarData.adhkar);
-    result.addAll(_customAdhkar.where((d) => d.category == DhikrCategory.sleep));
-
-    for (var dhikr in result) {
-      if (_progress.containsKey(dhikr.id)) {
-        dhikr.currentCount = _progress[dhikr.id]!;
+  List<Dhikr> get _filteredAdhkar {
+    final result = <Dhikr>[];
+    for (final dhikr in _adhkar) {
+      if (dhikr.isInCategory(_selectedTabId)) {
+        result.add(dhikr);
       }
     }
-
+    for (final dhikr in MorningAdhkarData.adhkar) {
+      if (dhikr.isInCategory(_selectedTabId)) {
+        result.add(dhikr);
+      }
+    }
+    for (final dhikr in EveningAdhkarData.adhkar) {
+      if (dhikr.isInCategory(_selectedTabId)) {
+        result.add(dhikr);
+      }
+    }
+    for (final dhikr in SleepAdhkarData.adhkar) {
+      if (dhikr.isInCategory(_selectedTabId)) {
+        result.add(dhikr);
+      }
+    }
+    for (final dhikr in _customAdhkar) {
+      if (dhikr.isInCategory(_selectedTabId)) {
+        if (_progress.containsKey(dhikr.id)) {
+          dhikr.currentCount = _progress[dhikr.id]!;
+        }
+        result.add(dhikr);
+      }
+    }
     return result;
   }
 
@@ -135,9 +155,63 @@ class _HomeScreenState extends State<HomeScreen> {
           const DynamicBackground(),
           Padding(
             padding: EdgeInsets.only(top: topPad + 70),
-            child: _buildAdhkarList(),
+            child: Column(
+              children: [
+                _buildCategoryTabs(),
+                Expanded(
+                  child: _buildAdhkarList(),
+                ),
+              ],
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryTabs() {
+    return Container(
+      height: 48,
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        itemCount: _categoryTabs.length,
+        itemBuilder: (context, index) {
+          final tabId = _categoryTabs[index];
+          final isSelected = tabId == _selectedTabId;
+          return GestureDetector(
+            onTap: () => setState(() => _selectedTabId = tabId),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? NeonColors.gold.withOpacity(0.2)
+                    : Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isSelected
+                      ? NeonColors.gold.withOpacity(0.6)
+                      : Colors.white.withOpacity(0.1),
+                ),
+                boxShadow: isSelected
+                    ? NeonColors.getNeonGlow(NeonColors.gold, intensity: 0.3)
+                    : null,
+              ),
+              child: Center(
+                child: Text(
+                  categoryLabel(tabId),
+                  style: TextStyle(
+                    color: isSelected ? NeonColors.gold : Colors.white54,
+                    fontSize: 14,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -203,9 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildDrawerItem(
               icon: Icons.menu_book,
               title: 'الأذكار',
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context),
             ),
             _buildDrawerItem(
               icon: Icons.add_circle_outline,
@@ -268,10 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 'نور قلبك v1.0',
-                style: TextStyle(
-                  color: Colors.white24,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.white24, fontSize: 12),
               ),
             ),
           ],
@@ -289,15 +358,10 @@ class _HomeScreenState extends State<HomeScreen> {
       leading: Icon(icon, color: NeonColors.gold, size: 22),
       title: Text(
         title,
-        style: TextStyle(
-          color: Colors.white.withOpacity(0.85),
-          fontSize: 15,
-        ),
+        style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 15),
       ),
       onTap: onTap,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
     );
   }
@@ -325,10 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
-            Text(
-              'الإصدار 1.0',
-              style: TextStyle(color: Colors.white38, fontSize: 12),
-            ),
+            Text('الإصدار 1.0', style: TextStyle(color: Colors.white38, fontSize: 12)),
             const SizedBox(height: 8),
             Text(
               'نسأل الله أن ينفع بهذا التطبيق',
@@ -344,10 +405,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(
-              'إغلاق',
-              style: TextStyle(color: NeonColors.gold),
-            ),
+            child: Text('إغلاق', style: TextStyle(color: NeonColors.gold)),
           ),
         ],
       ),
@@ -355,41 +413,48 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildAdhkarList() {
-    final currentList = _allAdhkar;
+    final currentList = _filteredAdhkar;
+    if (currentList.isEmpty) {
+      return Center(
+        child: Text(
+          'لا توجد أذكار في هذا التصنيف',
+          style: TextStyle(color: Colors.white38, fontSize: 16),
+        ),
+      );
+    }
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: currentList.length,
-        itemBuilder: (context, index) {
-          final dhikr = currentList[index];
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Stack(
-              children: [
-                DhikrCard(
-                  dhikr: dhikr,
-                  onTap: () => _openTasbih(dhikr),
-                ),
-                if (dhikr.isCustom)
-                  Positioned(
-                    top: 4,
-                    left: 4,
-                    child: GestureDetector(
-                      onTap: () => _deleteCustomDhikr(dhikr.id),
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(Icons.close, color: Colors.white, size: 14),
+      itemCount: currentList.length,
+      itemBuilder: (context, index) {
+        final dhikr = currentList[index];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Stack(
+            children: [
+              DhikrCard(
+                dhikr: dhikr,
+                onTap: () => _openTasbih(dhikr),
+              ),
+              if (dhikr.isCustom)
+                Positioned(
+                  top: 4,
+                  left: 4,
+                  child: GestureDetector(
+                    onTap: () => _deleteCustomDhikr(dhikr.id),
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                      child: const Icon(Icons.close, color: Colors.white, size: 14),
                     ),
                   ),
-              ],
-            ),
-          );
-        },
-      ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 

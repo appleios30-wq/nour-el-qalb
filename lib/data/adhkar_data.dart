@@ -10,7 +10,7 @@ class AdhkarData {
       neonColor: const Color(0xFF00BFFF),
       targetCount: 33,
       virtue: 'من قالها مائة مرة حطت خطاياه وإن كانت مثل زبد البحر',
-      category: DhikrCategory.general,
+      categoryIds: ['general'],
     ),
     Dhikr(
       id: 'alhamdulillah',
@@ -19,7 +19,7 @@ class AdhkarData {
       neonColor: const Color(0xFF00FF7F),
       targetCount: 33,
       virtue: 'أفضل الذكر الحمد لله',
-      category: DhikrCategory.general,
+      categoryIds: ['general'],
     ),
     Dhikr(
       id: 'allahakbar',
@@ -28,7 +28,7 @@ class AdhkarData {
       neonColor: const Color(0xFFFFD700),
       targetCount: 34,
       virtue: 'كبائر السيئات تُمحى بالاستغفار',
-      category: DhikrCategory.general,
+      categoryIds: ['general'],
     ),
     Dhikr(
       id: 'lailahaillallah',
@@ -37,7 +37,7 @@ class AdhkarData {
       neonColor: const Color(0xFF9400D3),
       targetCount: 100,
       virtue: 'أفضل ذكر وأعظم درجة',
-      category: DhikrCategory.general,
+      categoryIds: ['general'],
     ),
     Dhikr(
       id: 'astaghfirallah',
@@ -46,7 +46,7 @@ class AdhkarData {
       neonColor: const Color(0xFFFF69B4),
       targetCount: 100,
       virtue: 'من استغفر الله غفر الله له',
-      category: DhikrCategory.general,
+      categoryIds: ['general'],
     ),
     Dhikr(
       id: 'subhanallahwabihamdihi',
@@ -55,7 +55,7 @@ class AdhkarData {
       neonColor: const Color(0xFFFF8C00),
       targetCount: 100,
       virtue: 'حبان له قلبتين من ذهب',
-      category: DhikrCategory.general,
+      categoryIds: ['general'],
     ),
     Dhikr(
       id: 'subhanallahilazeem',
@@ -64,7 +64,7 @@ class AdhkarData {
       neonColor: const Color(0xFF00CED1),
       targetCount: 100,
       virtue: 'كلمتان خفيفتان على اللسان ثقيلتان في الميزان',
-      category: DhikrCategory.general,
+      categoryIds: ['general'],
     ),
     Dhikr(
       id: 'lahawlaquwwata',
@@ -73,7 +73,7 @@ class AdhkarData {
       neonColor: const Color(0xFFC0C0C0),
       targetCount: 100,
       virtue: 'كنز من كنوز الجنة',
-      category: DhikrCategory.general,
+      categoryIds: ['general'],
     ),
   ];
 }

@@ -1,45 +1,14 @@
 import 'package:flutter/material.dart';
 
-enum DhikrCategory { general, morning, evening, sleep }
+List<String> get builtInCategoryIds => ['general', 'morning', 'evening', 'sleep'];
 
-extension DhikrCategoryExtension on DhikrCategory {
-  String get label {
-    switch (this) {
-      case DhikrCategory.general:
-        return 'أذكار مطلقة';
-      case DhikrCategory.morning:
-        return 'أذكار الصباح';
-      case DhikrCategory.evening:
-        return 'أذكار المساء';
-      case DhikrCategory.sleep:
-        return 'أذكار النوم';
-    }
-  }
-
-  String get name {
-    switch (this) {
-      case DhikrCategory.general:
-        return 'general';
-      case DhikrCategory.morning:
-        return 'morning';
-      case DhikrCategory.evening:
-        return 'evening';
-      case DhikrCategory.sleep:
-        return 'sleep';
-    }
-  }
-
-  static DhikrCategory fromString(String value) {
-    switch (value) {
-      case 'morning':
-        return DhikrCategory.morning;
-      case 'evening':
-        return DhikrCategory.evening;
-      case 'sleep':
-        return DhikrCategory.sleep;
-      default:
-        return DhikrCategory.general;
-    }
+String categoryLabel(String id) {
+  switch (id) {
+    case 'general': return 'أذكار مطلقة';
+    case 'morning': return 'أذكار الصباح';
+    case 'evening': return 'أذكار المساء';
+    case 'sleep': return 'أذكار النوم';
+    default: return id;
   }
 }
 
@@ -53,7 +22,7 @@ class Dhikr {
   int currentCount;
   final bool isCustom;
   String fontFamily;
-  final DhikrCategory category;
+  final List<String> categoryIds;
 
   Dhikr({
     required this.id,
@@ -65,10 +34,12 @@ class Dhikr {
     this.currentCount = 0,
     this.isCustom = false,
     this.fontFamily = 'Cairo',
-    this.category = DhikrCategory.general,
+    this.categoryIds = const ['general'],
   });
 
   bool get isCompleted => currentCount >= targetCount;
+
+  bool isInCategory(String catId) => categoryIds.contains(catId);
 
   void reset() {
     currentCount = 0;
@@ -90,21 +61,29 @@ class Dhikr {
     'currentCount': currentCount,
     'isCustom': isCustom,
     'fontFamily': fontFamily,
-    'category': category.name,
+    'categoryIds': categoryIds,
   };
 
-  factory Dhikr.fromJson(Map<String, dynamic> json) => Dhikr(
-    id: json['id'],
-    text: json['text'],
-    arabicName: json['arabicName'],
-    neonColor: Color(json['neonColor']),
-    targetCount: json['targetCount'],
-    virtue: json['virtue'],
-    currentCount: json['currentCount'] ?? 0,
-    isCustom: json['isCustom'] ?? false,
-    fontFamily: json['fontFamily'] ?? 'Cairo',
-    category: DhikrCategoryExtension.fromString(
-      json['category'] ?? 'general',
-    ),
-  );
+  factory Dhikr.fromJson(Map<String, dynamic> json) {
+    List<String> cats;
+    if (json.containsKey('categoryIds')) {
+      cats = List<String>.from(json['categoryIds']);
+    } else if (json.containsKey('category')) {
+      cats = [json['category'] as String];
+    } else {
+      cats = ['general'];
+    }
+    return Dhikr(
+      id: json['id'],
+      text: json['text'],
+      arabicName: json['arabicName'],
+      neonColor: Color(json['neonColor']),
+      targetCount: json['targetCount'],
+      virtue: json['virtue'],
+      currentCount: json['currentCount'] ?? 0,
+      isCustom: json['isCustom'] ?? false,
+      fontFamily: json['fontFamily'] ?? 'Cairo',
+      categoryIds: cats,
+    );
+  }
 }

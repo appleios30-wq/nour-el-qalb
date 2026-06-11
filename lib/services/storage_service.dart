@@ -129,6 +129,41 @@ class StorageService {
     return box.get(_pinKey);
   }
 
+  // ===== الفئات (التبويبات) =====
+  static const String _categoriesKey = 'custom_categories';
+
+  static Future<List<String>> getCategoryTabs() async {
+    final box = Hive.box(_settingsBox);
+    final custom = box.get(_categoriesKey, defaultValue: <String>[]);
+    final customList = List<String>.from(custom);
+    final all = <String>[];
+    for (final id in builtInCategoryIds) {
+      if (id == 'general') continue;
+      all.add(id);
+    }
+    all.add('general');
+    all.addAll(customList.where((c) => !builtInCategoryIds.contains(c)));
+    return all;
+  }
+
+  static Future<void> addCategoryTab(String name) async {
+    final box = Hive.box(_settingsBox);
+    final custom = box.get(_categoriesKey, defaultValue: <String>[]);
+    final list = List<String>.from(custom);
+    if (!list.contains(name) && !builtInCategoryIds.contains(name)) {
+      list.add(name);
+      await box.put(_categoriesKey, list);
+    }
+  }
+
+  static Future<void> removeCategoryTab(String name) async {
+    final box = Hive.box(_settingsBox);
+    final custom = box.get(_categoriesKey, defaultValue: <String>[]);
+    final list = List<String>.from(custom);
+    list.remove(name);
+    await box.put(_categoriesKey, list);
+  }
+
   // ===== مسح كل البيانات =====
   static Future<void> clearAll() async {
     await Hive.box(_settingsBox).clear();

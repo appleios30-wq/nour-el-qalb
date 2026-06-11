@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/dhikr.dart';
 
+
 class EveningAdhkarData {
   static List<Dhikr> get adhkar => [
     Dhikr(
@@ -10,7 +11,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFFFF6B6B),
       targetCount: 1,
       virtue: 'من قالها حين يمسي كان له نوراً',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
     Dhikr(
       id: 'evening_2',
@@ -19,7 +20,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFFFFD700),
       targetCount: 1,
       virtue: 'له أجر عشر رقاب وكتبت له حسنات',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
     Dhikr(
       id: 'evening_3',
@@ -28,7 +29,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFF00FF7F),
       targetCount: 1,
       virtue: 'شكر نعمته وتوفيقها',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
     Dhikr(
       id: 'evening_4',
@@ -37,7 +38,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFF9400D3),
       targetCount: 1,
       virtue: 'يسأل الله خير الليلة كلها',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
     Dhikr(
       id: 'evening_5',
@@ -46,7 +47,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFF00CED1),
       targetCount: 7,
       virtue: 'كفاه الله ما أهمه من أمر الدنيا والآخرة',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
     Dhikr(
       id: 'evening_6',
@@ -55,7 +56,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFFFF69B4),
       targetCount: 3,
       virtue: 'عصمة من شر الخلق',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
     Dhikr(
       id: 'evening_7',
@@ -64,7 +65,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFFFF8C00),
       targetCount: 10,
       virtue: 'بها يرفع العبد عشر درجات',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
     Dhikr(
       id: 'evening_8',
@@ -73,7 +74,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFF00BFFF),
       targetCount: 3,
       virtue: 'تسبيح يزن كل مخلوقات الله',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
     Dhikr(
       id: 'evening_9',
@@ -82,7 +83,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFFC0C0C0),
       targetCount: 1,
       virtue: 'من قالها حين يمسي كانت له عدل رقبة',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
     Dhikr(
       id: 'evening_10',
@@ -91,7 +92,7 @@ class EveningAdhkarData {
       neonColor: const Color(0xFFFF4500),
       targetCount: 4,
       virtue: 'من قالها حين يمسي أعتقه الله من النار',
-      category: DhikrCategory.evening,
+      categoryIds: ['evening'],
     ),
   ];
 }
