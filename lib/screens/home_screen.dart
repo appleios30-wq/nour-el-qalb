@@ -86,61 +86,56 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final topPad = MediaQuery.of(context).padding.top;
     return Scaffold(
       key: _scaffoldKey,
       drawer: _buildDrawer(),
-      body: Stack(
-        children: [
-          const DynamicBackground(),
-          SafeArea(
-            child: Column(
-              children: [
-                _buildHeader(),
-                Expanded(
-                  child: _buildAdhkarList(),
-                ),
-              ],
+      backgroundColor: const Color(0xFF0a0a1a),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 70,
+        leading: IconButton(
+          icon: Icon(Icons.menu, color: NeonColors.gold, size: 26),
+          onPressed: () {
+            _scaffoldKey.currentState?.openDrawer();
+          },
+        ),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'بسم الله الرحمن الرحيم',
+              style: TextStyle(
+                color: NeonColors.gold.withOpacity(0.6),
+                fontSize: 10 * _fontSizeMultiplier,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            icon: Icon(Icons.menu, color: NeonColors.gold, size: 26),
-            onPressed: () {
-              _scaffoldKey.currentState?.openDrawer();
-            },
-          ),
-          Column(
-            children: [
-              Text(
-                'بسم الله الرحمن الرحيم',
-                style: TextStyle(
-                  color: NeonColors.gold.withOpacity(0.6),
-                  fontSize: 10 * _fontSizeMultiplier,
-                ),
+            const SizedBox(height: 2),
+            Text(
+              'نور قلبك',
+              style: NeonColors.getNeonTextStyle(
+                NeonColors.gold,
+                fontSize: 26,
               ),
-              const SizedBox(height: 2),
-              Text(
-                'نور قلبك',
-                style: NeonColors.getNeonTextStyle(
-                  NeonColors.gold,
-                  fontSize: 26,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
+        ),
+        centerTitle: true,
+        actions: [
           IconButton(
             icon: Icon(Icons.search, color: NeonColors.gold, size: 26),
             onPressed: () {},
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          const DynamicBackground(),
+          Padding(
+            padding: EdgeInsets.only(top: topPad + 70),
+            child: _buildAdhkarList(),
           ),
         ],
       ),
@@ -363,37 +358,38 @@ class _HomeScreenState extends State<HomeScreen> {
     final currentList = _allAdhkar;
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: currentList.length,
-      itemBuilder: (context, index) {
-        final dhikr = currentList[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Stack(
-            children: [
-              DhikrCard(
-                dhikr: dhikr,
-                onTap: () => _openTasbih(dhikr),
-              ),
-              if (dhikr.isCustom)
-                Positioned(
-                  top: 4,
-                  left: 4,
-                  child: GestureDetector(
-                    onTap: () => _deleteCustomDhikr(dhikr.id),
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(8),
+        itemCount: currentList.length,
+        itemBuilder: (context, index) {
+          final dhikr = currentList[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Stack(
+              children: [
+                DhikrCard(
+                  dhikr: dhikr,
+                  onTap: () => _openTasbih(dhikr),
+                ),
+                if (dhikr.isCustom)
+                  Positioned(
+                    top: 4,
+                    left: 4,
+                    child: GestureDetector(
+                      onTap: () => _deleteCustomDhikr(dhikr.id),
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.close, color: Colors.white, size: 14),
                       ),
-                      child: const Icon(Icons.close, color: Colors.white, size: 14),
                     ),
                   ),
-                ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
