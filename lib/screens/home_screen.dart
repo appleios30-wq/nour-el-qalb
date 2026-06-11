@@ -5,7 +5,6 @@ import '../data/evening_adhkar_data.dart';
 import '../data/sleep_adhkar_data.dart';
 import '../models/dhikr.dart';
 import '../services/storage_service.dart';
-import '../services/time_service.dart';
 import '../utils/neon_colors.dart';
 import '../widgets/dhikr_card.dart';
 import '../widgets/dynamic_background.dart';
@@ -14,6 +13,7 @@ import 'names_screen.dart';
 import 'notes_screen.dart';
 import 'add_dhikr_screen.dart';
 import 'font_settings_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,18 +28,21 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   int _selectedCategoryIndex = 0;
   Map<String, int> _progress = {};
+  double _fontSizeMultiplier = 1.0;
 
   @override
   void initState() {
     super.initState();
     _loadAllData();
+    _loadFontSize();
   }
 
   Future<void> _loadAllData() async {
     final progress = await StorageService.getAdhkarProgress();
     final customAdhkar = await StorageService.getCustomDhikrs();
+    final fontSettings = await StorageService.getFontSettings();
+    final sizeStr = fontSettings['size'] ?? '1.0';
 
-    // تحميل التقدم للأذكار القياسية
     final adhkar = AdhkarData.defaultAdhkar;
     for (var dhikr in adhkar) {
       if (progress.containsKey(dhikr.id)) {
@@ -47,12 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    // تحميل التقدم للأذكار المخصصة
     for (var dhikr in customAdhkar) {
       if (progress.containsKey(dhikr.id)) {
         dhikr.currentCount = progress[dhikr.id]!;
       }
-      // استرجاع لون النيون المخصص
       if (progress.containsKey('${dhikr.id}_color')) {
         dhikr.neonColor = Color(progress['${dhikr.id}_color']!);
       }
@@ -62,6 +63,15 @@ class _HomeScreenState extends State<HomeScreen> {
       _adhkar = adhkar;
       _customAdhkar = customAdhkar;
       _progress = progress;
+      _fontSizeMultiplier = double.tryParse(sizeStr) ?? 1.0;
+    });
+  }
+
+  Future<void> _loadFontSize() async {
+    final fontSettings = await StorageService.getFontSettings();
+    final sizeStr = fontSettings['size'] ?? '1.0';
+    setState(() {
+      _fontSizeMultiplier = double.tryParse(sizeStr) ?? 1.0;
     });
   }
 
@@ -88,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
     }
 
-    // استرجاع التقدم المحفوظ
     for (var dhikr in result) {
       if (_progress.containsKey(dhikr.id)) {
         dhikr.currentCount = _progress[dhikr.id]!;
@@ -108,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: _buildDrawer(),
       body: Stack(
         children: [
           const DynamicBackground(),
@@ -130,74 +140,270 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                TimeService.getTimeGreeting(),
-                style: TextStyle(
-                  color: Colors.white.withOpacity( 0.7),
-                  fontSize: 16,
+          GestureDetector(
+            onTap: () => Scaffold.of(context).openDrawer(),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: NeonColors.darkCard.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: NeonColors.gold.withOpacity(0.3),
                 ),
               ),
-              const SizedBox(height: 4),
+              child: Icon(Icons.menu, color: NeonColors.gold, size: 22),
+            ),
+          ),
+          Column(
+            children: [
+              Text(
+                'بسم الله الرحمن الرحيم',
+                style: TextStyle(
+                  color: NeonColors.gold.withOpacity(0.6),
+                  fontSize: 10 * _fontSizeMultiplier,
+                ),
+              ),
+              const SizedBox(height: 2),
               Text(
                 'نور قلبك',
                 style: NeonColors.getNeonTextStyle(
                   NeonColors.gold,
-                  fontSize: 28,
+                  fontSize: 26,
                 ),
               ),
             ],
           ),
-          Row(
-            children: [
-              // زر إضافة ذكر
-              GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddDhikrScreen(),
-                  ),
-                ).then((_) => _loadAllData()),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: NeonColors.darkCard.withOpacity( 0.8),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: NeonColors.green.withOpacity( 0.3),
-                    ),
-                  ),
-                  child: Icon(Icons.add, color: NeonColors.green, size: 20),
+          GestureDetector(
+            onTap: () {
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: NeonColors.darkCard.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: NeonColors.gold.withOpacity(0.3),
                 ),
               ),
-              const SizedBox(width: 8),
-              // زر إعدادات الخطوط
-              GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const FontSettingsScreen(),
-                  ),
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: NeonColors.darkCard.withOpacity( 0.8),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: NeonColors.gold.withOpacity( 0.3),
-                    ),
-                  ),
-                  child: Icon(Icons.text_fields, color: NeonColors.gold, size: 20),
+              child: Icon(Icons.search, color: NeonColors.gold, size: 22),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDrawer() {
+    return Drawer(
+      backgroundColor: NeonColors.darkBackground,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    NeonColors.darkCard,
+                    NeonColors.darkBackground,
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
-            ],
+              child: Column(
+                children: [
+                  Text(
+                    'بسم الله الرحمن الرحيم',
+                    style: TextStyle(
+                      fontFamily: 'Amiri',
+                      color: NeonColors.gold,
+                      fontSize: 20,
+                      height: 1.8,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: NeonColors.gold, width: 2),
+                      boxShadow: NeonColors.getNeonGlow(NeonColors.gold, intensity: 0.5),
+                    ),
+                    child: Icon(
+                      Icons.nightlight_round,
+                      color: NeonColors.gold,
+                      size: 30,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'نور قلبك',
+                    style: NeonColors.getNeonTextStyle(
+                      NeonColors.gold,
+                      fontSize: 22,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            _buildDrawerItem(
+              icon: Icons.menu_book,
+              title: 'الأذكار',
+              onTap: () {
+                Navigator.pop(context);
+                setState(() {
+                  _selectedIndex = 0;
+                });
+              },
+            ),
+            _buildDrawerItem(
+              icon: Icons.add_circle_outline,
+              title: 'إضافة ذكر مخصص',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddDhikrScreen()),
+                ).then((_) => _loadAllData());
+              },
+            ),
+            _buildDrawerItem(
+              icon: Icons.star_outline,
+              title: 'أسماء الله الحسنى',
+              onTap: () {
+                Navigator.pop(context);
+                setState(() {
+                  _selectedIndex = 2;
+                });
+              },
+            ),
+            _buildDrawerItem(
+              icon: Icons.note_alt_outlined,
+              title: 'الملاحظات',
+              onTap: () {
+                Navigator.pop(context);
+                setState(() {
+                  _selectedIndex = 3;
+                });
+              },
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Divider(color: Colors.white12),
+            ),
+            _buildDrawerItem(
+              icon: Icons.settings_outlined,
+              title: 'الإعدادات',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                ).then((_) => _loadAllData());
+              },
+            ),
+            _buildDrawerItem(
+              icon: Icons.info_outline,
+              title: 'عن البرنامج',
+              onTap: () {
+                Navigator.pop(context);
+                _showAboutDialog();
+              },
+            ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'نور قلبك v1.0',
+                style: TextStyle(
+                  color: Colors.white24,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: NeonColors.gold, size: 22),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: Colors.white.withOpacity(0.85),
+          fontSize: 15,
+        ),
+      ),
+      onTap: onTap,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+    );
+  }
+
+  void _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: NeonColors.darkCard,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: NeonColors.gold.withOpacity(0.3)),
+        ),
+        title: Text(
+          'نور قلبك',
+          style: NeonColors.getNeonTextStyle(NeonColors.gold, fontSize: 22),
+          textAlign: TextAlign.center,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'تطبيق أذكار يومية مع تأثيرات نيون متوهجة',
+              style: TextStyle(color: Colors.white70, fontSize: 14),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'الإصدار 1.0',
+              style: TextStyle(color: Colors.white38, fontSize: 12),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'نسأل الله أن ينفع بهذا التطبيق',
+              style: TextStyle(
+                color: NeonColors.gold.withOpacity(0.6),
+                fontSize: 13,
+                fontStyle: FontStyle.italic,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'إغلاق',
+              style: TextStyle(color: NeonColors.gold),
+            ),
           ),
         ],
       ),
@@ -210,11 +416,10 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-          // التبويبات
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: NeonColors.darkCard.withOpacity( 0.8),
+              color: NeonColors.darkCard.withOpacity(0.8),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Row(
@@ -229,7 +434,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? _getCategoryColor(index).withOpacity( 0.2)
+                            ? _getCategoryColor(index).withOpacity(0.2)
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -264,7 +469,6 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
             ),
           ),
-          // شريط التقدم
           const SizedBox(height: 8),
           _buildProgressBar(currentList),
         ],
@@ -281,7 +485,7 @@ class _HomeScreenState extends State<HomeScreen> {
       borderRadius: BorderRadius.circular(10),
       child: LinearProgressIndicator(
         value: progress,
-        backgroundColor: NeonColors.darkCard.withOpacity( 0.5),
+        backgroundColor: NeonColors.darkCard.withOpacity(0.5),
         valueColor: AlwaysStoppedAnimation<Color>(
           _getCategoryColor(_selectedCategoryIndex),
         ),
@@ -292,10 +496,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Color _getCategoryColor(int index) {
     switch (index) {
-      case 0: return const Color(0xFF00BFFF); // أزرق
-      case 1: return const Color(0xFFFFB347); // برتقالي
-      case 2: return const Color(0xFF6A5ACD); // بنفسجي
-      case 3: return const Color(0xFF7B68EE); // نيلي
+      case 0: return const Color(0xFF00BFFF);
+      case 1: return const Color(0xFFFFB347);
+      case 2: return const Color(0xFF6A5ACD);
+      case 3: return const Color(0xFF7B68EE);
       default: return NeonColors.gold;
     }
   }
@@ -339,7 +543,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.red.withOpacity( 0.8),
+                        color: Colors.red.withOpacity(0.8),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(Icons.close, color: Colors.white, size: 14),
@@ -351,14 +555,6 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
-  }
-
-  int _getCompletedCount() {
-    return _currentCategoryAdhkar.where((d) => d.isCompleted).length;
-  }
-
-  int _getRemainingCount() {
-    return _currentCategoryAdhkar.where((d) => !d.isCompleted).length;
   }
 
   void _openTasbih(Dhikr dhikr) {
@@ -379,10 +575,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: NeonColors.darkCard.withOpacity( 0.9),
+        color: NeonColors.darkCard.withOpacity(0.9),
         border: Border(
           top: BorderSide(
-            color: NeonColors.gold.withOpacity( 0.3),
+            color: NeonColors.gold.withOpacity(0.3),
             width: 1,
           ),
         ),
@@ -412,7 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? NeonColors.gold.withOpacity( 0.2)
+              ? NeonColors.gold.withOpacity(0.2)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
