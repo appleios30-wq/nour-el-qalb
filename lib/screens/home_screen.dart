@@ -22,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Dhikr> _adhkar = [];
   List<Dhikr> _customAdhkar = [];
   Map<String, int> _progress = {};
@@ -86,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: _buildDrawer(),
       body: Stack(
         children: [
@@ -114,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.menu, color: NeonColors.gold, size: 26),
             onPressed: () {
-              Scaffold.of(context).openDrawer();
+              _scaffoldKey.currentState?.openDrawer();
             },
           ),
           Column(
