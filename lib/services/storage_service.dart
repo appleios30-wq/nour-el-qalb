@@ -11,6 +11,9 @@ class StorageService {
   static const String _onboardingKey = 'onboarding_completed';
   static const String _pinKey = 'notes_pin';
   static const String _fontSettingsKey = 'font_settings';
+  static const String _categoriesKey = 'custom_categories';
+  static const String _backgroundsKey = 'selected_backgrounds';
+  static const String _dhikrOrderKey = 'dhikr_order';
 
   // ===== الإعدادات =====
   static Future<void> saveSettings(UserSettings settings) async {
@@ -162,6 +165,51 @@ class StorageService {
     final list = List<String>.from(custom);
     list.remove(name);
     await box.put(_categoriesKey, list);
+  }
+
+  // ===== الخلفيات =====
+  static Future<String?> getSelectedBackground(String categoryId) async {
+    final box = Hive.box(_settingsBox);
+    final data = box.get(_backgroundsKey, defaultValue: <String, String>{});
+    return data[categoryId];
+  }
+
+  static Future<Map<String, String>> getAllSelectedBackgrounds() async {
+    final box = Hive.box(_settingsBox);
+    final data = box.get(_backgroundsKey, defaultValue: <String, String>{});
+    return Map<String, String>.from(data);
+  }
+
+  static Future<void> setSelectedBackground(String categoryId, String presetId) async {
+    final box = Hive.box(_settingsBox);
+    final data = box.get(_backgroundsKey, defaultValue: <String, String>{});
+    data[categoryId] = presetId;
+    await box.put(_backgroundsKey, data);
+  }
+
+  // ===== ترتيب الأذكار =====
+  static Future<List<String>?> getDhikrOrder() async {
+    final box = Hive.box(_settingsBox);
+    final data = box.get(_dhikrOrderKey);
+    if (data != null) return List<String>.from(data);
+    return null;
+  }
+
+  static Future<void> setDhikrOrder(List<String> ids) async {
+    final box = Hive.box(_settingsBox);
+    await box.put(_dhikrOrderKey, ids);
+  }
+
+  // ===== تعديل الذكر =====
+  static Future<void> updateCustomDhikr(Dhikr dhikr) async {
+    final box = Hive.box(_customBox);
+    final existing = box.get('custom_dhikrs', defaultValue: <dynamic>[]);
+    final list = List<Map<String, dynamic>>.from(existing);
+    final index = list.indexWhere((item) => item['id'] == dhikr.id);
+    if (index != -1) {
+      list[index] = dhikr.toJson();
+      await box.put('custom_dhikrs', list);
+    }
   }
 
   // ===== مسح كل البيانات =====

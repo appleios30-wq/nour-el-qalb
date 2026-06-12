@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/names_data.dart';
 import '../models/allah_name.dart';
 import '../utils/neon_colors.dart';
+import '../widgets/dynamic_background.dart';
 
 class NamesScreen extends StatefulWidget {
   const NamesScreen({super.key});
@@ -13,6 +14,8 @@ class NamesScreen extends StatefulWidget {
 class _NamesScreenState extends State<NamesScreen> {
   String _searchQuery = '';
   List<AllahName> _filteredNames = [];
+  bool _showSearch = false;
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -37,79 +40,69 @@ class _NamesScreenState extends State<NamesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // رأس الصفحة
-        _buildHeader(),
-        
-        // شريط البحث
-        _buildSearchBar(),
-        
-        // قائمة الأسماء
-        Expanded(
-          child: _buildNamesList(),
+    final topPad = MediaQuery.of(context).padding.top;
+    return Scaffold(
+      backgroundColor: NeonColors.darkBackground,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 60,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: NeonColors.gold, size: 26),
+          onPressed: () => Navigator.pop(context),
         ),
-      ],
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        title: _showSearch
+            ? TextField(
+                controller: _searchController,
+                onChanged: _filterNames,
+                autofocus: true,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+                decoration: InputDecoration(
+                  hintText: 'ابحث عن اسم...',
+                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
+                  border: InputBorder.none,
+                ),
+              )
+            : Text(
+                'أسماء الله الحسنى',
+                style: NeonColors.getNeonTextStyle(NeonColors.gold, fontSize: 24),
+              ),
+        centerTitle: true,
+        actions: [
           IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
-          Text(
-            'أسماء الله الحسنى',
-            style: NeonColors.getNeonTextStyle(
-              NeonColors.gold,
-              fontSize: 24,
+            icon: Icon(
+              _showSearch ? Icons.close : Icons.search,
+              color: NeonColors.gold,
+              size: 26,
             ),
+            onPressed: () {
+              setState(() {
+                _showSearch = !_showSearch;
+                if (!_showSearch) {
+                  _searchController.clear();
+                  _filterNames('');
+                }
+              });
+            },
           ),
-          const SizedBox(width: 48),
         ],
       ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: NeonColors.darkCard.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(
-          color: NeonColors.gold.withOpacity(0.3),
-        ),
-      ),
-      child: TextField(
-        onChanged: _filterNames,
-        style: const TextStyle(color: Colors.white),
-        decoration: InputDecoration(
-          hintText: 'ابحث عن اسم...',
-          hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-          border: InputBorder.none,
-          prefixIcon: Icon(
-            Icons.search,
-            color: NeonColors.gold,
+      body: Stack(
+        children: [
+          const DynamicBackground(),
+          Padding(
+            padding: EdgeInsets.only(top: topPad + 60),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: _filteredNames.length,
+              itemBuilder: (context, index) {
+                return _buildNameCard(_filteredNames[index]);
+              },
+            ),
           ),
-        ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildNamesList() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _filteredNames.length,
-      itemBuilder: (context, index) {
-        return _buildNameCard(_filteredNames[index]);
-      },
     );
   }
 
@@ -118,62 +111,50 @@ class _NamesScreenState extends State<NamesScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: NeonColors.darkCard.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(20),
+        color: NeonColors.darkCard.withOpacity(0.85),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: NeonColors.gold.withOpacity(0.3),
-          width: 1,
+          width: 1.5,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            children: [
-              // رقم الاسم
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: NeonColors.gold.withOpacity(0.2),
-                  border: Border.all(
-                    color: NeonColors.gold,
-                    width: 2,
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    '${name.number}',
-                    style: NeonColors.getNeonTextStyle(
-                      NeonColors.gold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
+          // رقم الاسم مع أيقونة زخرفية
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: NeonColors.gold.withOpacity(0.12),
+              border: Border.all(color: NeonColors.gold.withOpacity(0.5), width: 1.5),
+            ),
+            child: Center(
+              child: Text(
+                '${name.number}',
+                style: NeonColors.getNeonTextStyle(NeonColors.gold, fontSize: 18),
               ),
-              const SizedBox(width: 16),
-              // الاسم
-              Expanded(
-                child: Text(
-                  name.name,
-                  style: NeonColors.getNeonTextStyle(
-                    NeonColors.gold,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-          const SizedBox(height: 12),
-          // المعنى
-          _buildInfoRow('المعنى:', name.meaning, NeonColors.green),
-          const SizedBox(height: 8),
-          // التعريف
-          _buildInfoRow('التعريف:', name.description, NeonColors.blue),
-          const SizedBox(height: 8),
-          // الدلالة على الاتصاف بالاسم
-          _buildInfoRow('الاتصاف:', name.howToEmbody, NeonColors.purple),
+          const SizedBox(width: 14),
+          // معلومات الاسم
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name.name,
+                  style: NeonColors.getNeonTextStyle(NeonColors.gold, fontSize: 22),
+                ),
+                const SizedBox(height: 6),
+                _buildInfoRow('المعنى:', name.meaning, NeonColors.green),
+                const SizedBox(height: 4),
+                _buildInfoRow('التعريف:', name.description, NeonColors.blue),
+                const SizedBox(height: 4),
+                _buildInfoRow('الاتصاف:', name.howToEmbody, NeonColors.purple),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -185,18 +166,13 @@ class _NamesScreenState extends State<NamesScreen> {
       children: [
         Text(
           label,
-          style: TextStyle(
-            color: color,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 6),
         Expanded(
           child: Text(
             value,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
-            ),
+            style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
           ),
         ),
       ],

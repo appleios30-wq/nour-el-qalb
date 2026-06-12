@@ -14,11 +14,11 @@ String categoryLabel(String id) {
 
 class Dhikr {
   final String id;
-  final String text;
-  final String arabicName;
+  String text;
+  String arabicName;
   Color neonColor;
   final int targetCount;
-  final String virtue;
+  String virtue;
   int currentCount;
   final bool isCustom;
   String fontFamily;
